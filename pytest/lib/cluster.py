@@ -223,7 +223,7 @@ class BaseNode(object):
             'id': 'dontcare',
             'jsonrpc': '2.0'
         }
-        r = session(timeout).post("http://%s:%s" % self.rpc_addr(), json=j)
+        r = session(timeout).post("https://%s:%s" % self.rpc_addr(), json=j)
         r.raise_for_status()
         return json.loads(r.content)
 
