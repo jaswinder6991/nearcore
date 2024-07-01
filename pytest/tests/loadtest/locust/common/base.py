@@ -66,6 +66,14 @@ class Account:
                 logger=logger,
             )
 
+    def get_nonce_for_pk(self, node, account_id, pk):
+            return mocknet_helpers.get_nonce_for_pk(account_id,
+                                 pk,
+                                 finality='optimistic',
+                                 addr=node.rpc_addr()[0],
+                                 port=node.rpc_addr()[1],
+                                 logger=logger)
+
     def use_nonce(self):
         with self.current_nonce.get_lock():
             new_nonce = self.current_nonce.value + 1
@@ -249,10 +257,10 @@ class NearNodeProxy:
     def send_tx_retry(self, tx: Transaction, locust_name) -> dict:
         """
         Send a transaction and retry until it succeeds
-        
+
         This method retries no matter the kind of error, but it tries to be
         smart about what to do depending on the error.
-        
+
         Expected error: UnknownTransactionError means TX has not been executed yet.
         Expected error: InvalidNonceError means we are using an outdated nonce.
         Other errors: Probably bugs in the test setup (e.g. invalid signer).
@@ -391,7 +399,7 @@ class NearNodeProxy:
             "jsonrpc": "2.0"
         }
         try:
-            return self.session.post(url="http://%s:%s" % self.node.rpc_addr(),
+            return self.session.post(url="https://%s:%s" % self.node.rpc_addr(),
                                      json=j)
         except Exception as e:
             raise RpcError(details=e)
@@ -444,10 +452,10 @@ class NearNodeProxy:
         """
         Creates accounts if they don't exist and refreshes their nonce.
         Accounts must share the parent account.
-        
+
         This implementation attempts on-chain parallelization, hence it should
         be faster than calling `prepare_account` in a loop.
-        
+
         Note that error-handling in this variant isn't quite as smooth. Errors
         that are only reported by the sync API of RPC nodes will not be caught
         here. Instead, we do a best-effort retry and stop after a fixed timeout.
@@ -536,7 +544,7 @@ class NearNodeProxy:
 class NearUser(User):
     abstract = True
     id_counter = 0
-    INIT_BALANCE = 100.0
+    INIT_BALANCE = 20.0
     funding_account: Account
 
     @classmethod
@@ -573,7 +581,7 @@ class NearUser(User):
                                  balance=NearUser.INIT_BALANCE))
         self.account.refresh_nonce(self.node.node)
 
-    def send_tx(self, tx: Transaction, locust_name="generic send_tx"):
+    def send_tx(self, tx: Transaction, locust_name="generic send_tx")-> dict:
         """
         Send a transaction and return the result, no retry attempted.
         """
@@ -707,7 +715,9 @@ def evaluate_rpc_result(rpc_result):
         raise RpcError(details=rpc_result["error"])
 
     result = rpc_result["result"]
+    print("Inside evaluate result",result)
     transaction_outcome = result["transaction_outcome"]
+    #print("Inside evaluate result",transaction_outcome)
     if not "SuccessReceiptId" in transaction_outcome["outcome"]["status"]:
         raise TxError(transaction_outcome["outcome"]["status"])
 
