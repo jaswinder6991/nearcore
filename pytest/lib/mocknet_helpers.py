@@ -17,7 +17,7 @@ def get_status(addr=LOCAL_ADDR, port=RPC_PORT):
 
 def json_rpc(method, params, addr=LOCAL_ADDR, port=RPC_PORT):
     j = {'method': method, 'params': params, 'id': 'dontcare', 'jsonrpc': '2.0'}
-    r = requests.post(f'https://{addr}:{port}', json=j, timeout=10)
+    r = requests.post(f'http://{addr}:{port}', json=j, timeout=10)
     return r.json()
 
 

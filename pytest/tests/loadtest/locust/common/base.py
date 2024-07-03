@@ -250,7 +250,7 @@ class NearNodeProxy:
         [url, port] = environment.host.rsplit(":", 1)
         self.node = cluster.RpcNode(url, port)
         self.session = Session(connection_timeout=6,
-                               network_timeout=9,
+                               network_timeout=15,
                                max_retries=5,
                                retry_delay=0.1)
 
@@ -399,7 +399,7 @@ class NearNodeProxy:
             "jsonrpc": "2.0"
         }
         try:
-            return self.session.post(url="https://%s:%s" % self.node.rpc_addr(),
+            return self.session.post(url="http://%s:%s" % self.node.rpc_addr(),
                                      json=j)
         except Exception as e:
             raise RpcError(details=e)
@@ -715,7 +715,7 @@ def evaluate_rpc_result(rpc_result):
         raise RpcError(details=rpc_result["error"])
 
     result = rpc_result["result"]
-    print("Inside evaluate result",result)
+    #print("Inside evaluate result",result)
     transaction_outcome = result["transaction_outcome"]
     #print("Inside evaluate result",transaction_outcome)
     if not "SuccessReceiptId" in transaction_outcome["outcome"]["status"]:

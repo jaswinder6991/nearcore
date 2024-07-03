@@ -49,21 +49,21 @@ class LinkdropUser(NearUser):
         #print(self.linkdrop.account, self.account,self.linkdrop.account, public_keys, self.drop_id)
         #print("self.account in AddKey which is the sender/signer of it.", self.account.key.account_id)
         tx = AddKey(self.linkdrop.account, self.account, public_keys, self.drop_id)
-        result = self.send_tx(tx, locust_name="Key added to the drop.")
+        result = self.send_tx_async(tx, locust_name="Key added to the drop.")
         #print(result)
-        near_name = f"{random_string()}.near"
-        print(near_name)
-        private_key, public_key = ed25519.create_keypair()
-        # Convert keys to Base58 and add prefix
+        # near_name = f"{random_string()}.near"
+        # # print(near_name)
+        # private_key, public_key = ed25519.create_keypair()
+        # # # Convert keys to Base58 and add prefix
         # sk = 'ed25519:' + base58.b58encode(private_key.to_bytes()).decode('ascii')
         # pk = 'ed25519:' + base58.b58encode(public_key.to_bytes()).decode('ascii')
-        # print("New Secret Key - ", sk)
-        # print("New Publick Key - ", pk)
-        #self.pk = pk
-        node = NearNodeProxy(self.environment)
-        print("Going into Claim Now")
-        tx_2 = ClaimDrop(self.linkdrop.account, near_name, pk,sk, node.node)
-        result2 = self.send_tx(tx_2, locust_name="Linkdrop Claimed")
+        # # print("New Secret Key - ", sk)
+        # # print("New Publick Key - ", pk)
+        # #self.pk = pk
+        # node = NearNodeProxy(self.environment)
+        # print("Going into Claim Now")
+        # tx_2 = ClaimDrop(self.linkdrop.account, near_name, pk,sk, node.node)
+        # result2 = self.send_tx(tx_2, locust_name="Linkdrop Claimed")
         #print(result2)
 
 
@@ -126,7 +126,7 @@ def _(parser):
         "--num-linkdrop-contracts",
         type=int,
         required=False,
-        default=1,
+        default=4,
         help=
         "How many different Linkdrop contracts to spawn from this worker (Linkdrop contracts are never shared between workers)"
     )
