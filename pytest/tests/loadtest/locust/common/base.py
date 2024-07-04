@@ -575,7 +575,8 @@ class NearUser(User):
                                                        self.user_suffix)
         self.account = Account(key.Key.from_random(self.account_id))
         if not self.node.account_exists(self.account_id):
-            self.send_tx_retry(
+            print("I am inside account does not exist and hence creating new. It should not break here. Trying to create - ", self.account.key.account_id)
+            self.send_tx(
                 CreateSubAccount(NearUser.funding_account,
                                  self.account.key,
                                  balance=NearUser.INIT_BALANCE))
