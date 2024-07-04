@@ -44,7 +44,7 @@ class LinkdropContract:
 
     def create_drop(self, user: NearUser) -> str:
         drop_id = str(random.randint(1_000_000_000, 10**38 - 1))
-        user.send_tx_retry(InitDrop(self.account, user.account, drop_id),locust_name="Create Drop Config")
+        user.send_tx(InitDrop(self.account, user.account, drop_id),locust_name="Create Drop Config")
         return drop_id
 
 class InitDropContract(FunctionCall):
