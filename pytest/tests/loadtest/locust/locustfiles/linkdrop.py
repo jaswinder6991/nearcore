@@ -49,7 +49,7 @@ class LinkdropUser(NearUser):
         #print(self.linkdrop.account, self.account,self.linkdrop.account, public_keys, self.drop_id)
         #print("self.account in AddKey which is the sender/signer of it.", self.account.key.account_id)
         tx = AddKey(self.linkdrop.account, self.account, public_keys, self.drop_id)
-        result = self.send_tx_async(tx, locust_name="Key added to the drop.")
+        self.send_tx_async(tx, locust_name="Key added to the drop.")
         #print(result)
         # near_name = f"{random_string()}.near"
         # # print(near_name)
@@ -72,7 +72,7 @@ class LinkdropUser(NearUser):
         #makes a user
         super().on_start()
         self.linkdrop = random.choice(self.environment.linkdrop_contracts)
-        print("Inside on_start, self.linkdrop - ", self.linkdrop.account.key.account_id)
+        #print("Inside on_start, self.linkdrop - ", self.linkdrop.account.key.account_id)
         #self.ft = random.choice(self.environment.ft_contracts)
         # Keypom contract does not need registration and distibution funds like FT.
         # Just create a drop.
@@ -97,9 +97,9 @@ def on_locust_init(environment, **kwargs):
     num_linkdrop_contracts = environment.parsed_options.num_linkdrop_contracts
     funding_account = NearUser.funding_account
     parent_id = funding_account.key.account_id
-    print("Funding Account - ",parent_id)
+    #print("Funding Account - ",parent_id)
 
-    print("I am in INIT")
+    #print("I am in INIT")
     funding_account.refresh_nonce(node.node)
 
     environment.linkdrop_contracts = []
@@ -109,10 +109,10 @@ def on_locust_init(environment, **kwargs):
             parent_id, '_linkdrop')
         contract_key = key.Key.from_random(account_id)
         linkdrop_account = Account(contract_key)
-        print("Linkdrop account before being deployed", linkdrop_account.key.account_id)
+        #print("Linkdrop account before being deployed", linkdrop_account.key.account_id)
         linkdrop_contract = LinkdropContract(linkdrop_account, linkdrop_account, linkdrop_contract_code)
         linkdrop_contract.install(node, funding_account)
-        print("Linkdrop Contract - ",linkdrop_contract.account.key.account_id)
+        #print("Linkdrop Contract - ",linkdrop_contract.account.key.account_id)
         environment.linkdrop_contracts.append(linkdrop_contract)
 
 

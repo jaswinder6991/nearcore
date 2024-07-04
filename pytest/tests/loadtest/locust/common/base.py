@@ -856,17 +856,21 @@ def do_on_locust_init(environment):
     # every worker needs a funding account to create its users, eagerly create them in the master
     if isinstance(environment.runner, runners.MasterRunner):
         num_funding_accounts = environment.parsed_options.max_workers
-        funding_balance = 10000 * NearUser.INIT_BALANCE
+        funding_balance = 1000 * NearUser.INIT_BALANCE
 
-        def create_account(id):
-            account_id = f"funds_worker_{id}.{master_funding_account.key.account_id}"
-            return Account(key.Key.from_seed_testonly(account_id))
+        # def create_account(id):
+        #     account_id = f"funds_worker_{id}.{master_funding_account.key.account_id}"
+        #     return Account(key.Key.from_seed_testonly(account_id))
 
-        funding_accounts = [
-            create_account(id) for id in range(num_funding_accounts)
-        ]
-        node.prepare_accounts(funding_accounts, master_funding_account,
-                              funding_balance, "create funding account")
+        # funding_accounts = [
+        #     create_account(id) for id in range(num_funding_accounts)
+        # ]
+        # node.prepare_accounts(funding_accounts, master_funding_account,
+        #                       funding_balance, "create funding account")
+        for index in range(num_funding_accounts):
+                    account_id = f"funds_worker_{index}.{master_funding_account.key.account_id}"
+                    account = Account(key.Key.from_seed_testonly(account_id))
+                    node.prepare_account(account, master_funding_account,funding_balance,"Create funding account")
         funding_account = master_funding_account
     elif isinstance(environment.runner, runners.WorkerRunner):
         worker_id = environment.runner.worker_index

@@ -34,7 +34,7 @@ class LinkdropContract:
                                        LinkdropContract.INIT_BALANCE,
                                        "create contract account")
         if not existed:
-            print("Inside Linkdrop Deploy install",self.account.key.account_id)
+            #print("Inside Linkdrop Deploy install",self.account.key.account_id)
             node.send_tx_retry(Deploy(self.account, self.code, "LINKDROP"),
                                "Deploy Linkdrop")
             self.init_contract(node)
@@ -43,7 +43,7 @@ class LinkdropContract:
         node.send_tx_retry(InitDropContract(self.account), "Init Drop Contract")
 
     def create_drop(self, user: NearUser) -> str:
-        drop_id = str(time.time_ns())
+        drop_id = str(random.randint(1_000_000_000, 10**38 - 1))
         user.send_tx_retry(InitDrop(self.account, user.account, drop_id),locust_name="Create Drop Config")
         return drop_id
 
